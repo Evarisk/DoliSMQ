@@ -177,7 +177,7 @@ class doc_controldocument_odt extends SaturneDocumentModel
                                         $tmpArray['answer'] = rtrim($tmpArray['answer'], ', ');
                                         break;
                                     default:
-                                        $tmpArray['answer'] = '';
+                                        $tmpArray['answer'] = is_array($answersArray)?$answersArray[$answerResult]:'';
                                 }
 
                                 $path     = $conf->digiquali->multidir_output[$conf->entity] . '/control/' . $object->ref . '/answer_photo/' . $question->ref;

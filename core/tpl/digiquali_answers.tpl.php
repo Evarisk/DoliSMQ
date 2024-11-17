@@ -133,24 +133,7 @@ if (is_array($sheet->linkedObjects['digiquali_question']) && !empty($sheet->link
                             }
                             ?>
                         </div>
-                    <?php elseif ($question->type == 'UniqueChoice' || $question->type == 'OkKo' || $question->type == 'OkKoToFixNonApplicable') :
-                        $answerList = $answer->fetchAll('ASC', 'position', 0, 0, ['customsql' => 't.status > ' . Answer::STATUS_DELETED . ' AND t.fk_question = ' . $question->id]); ?>
-                        <div class="table-cell table-end select-answer answer-cell table-300" <?php echo ($object->status > 0) ? 'style="pointer-events: none"' : '' ?> data-questionId="<?php echo $question->id; ?>">
-                            <?php
-                            print '<input type="hidden" class="question-answer" name="answer' . $question->id . '" id="answer' . $question->id . '" value="0">';
-                            if (is_array($answerList) && !empty($answerList)) {
-                                foreach($answerList as $answerLinked) {
-                                    print '<input type="hidden" class="answer-color answer-color-' . $answerLinked->position . '" value="' . $answerLinked->color . '">';
-                                    print '<span style="' . ($questionAnswer == $answerLinked->position ? 'background:' . $answerLinked->color . '; ' : '') . 'color:' . $answerLinked->color . ';" class="answer ' . ($object->status > 0 ? 'disable' : '') . ' ' . ($questionAnswer == $answerLinked->position ? 'active' : '') . '" value="' . $answerLinked->position . '">';
-                                    if (!empty($answerLinked->pictogram)) {
-                                        print $pictosArray[$answerLinked->pictogram]['picto_source'];
-                                    } else {
-                                        print $answerLinked->value;
-                                    }
-                                    print '</span>';
-                                }
-                            } ?>
-                        </div>
+                    
                     <?php elseif ($question->type == 'Percentage') : ?>
                         <div class="table-cell table-end answer-cell table-flex <?php echo ($object->status > 0) ? 'style="pointer-events: none"' : '' ?>" data-questionId="<?php echo $question->id; ?>">
                             <?php
@@ -173,7 +156,26 @@ if (is_array($sheet->linkedObjects['digiquali_question']) && !empty($sheet->link
                             print '</span>';
                             ?>
                         </div>
+		    <?php else://if ($question->type == 'UniqueChoice' || $question->type == 'OkKo' || $question->type == 'OkKoToFixNonApplicable') :
+                        $answerList = $answer->fetchAll('ASC', 'position', 0, 0, ['customsql' => 't.status > ' . Answer::STATUS_DELETED . ' AND t.fk_question = ' . $question->id]); ?>
+                        <div class="table-cell table-end select-answer answer-cell table-300" <?php echo ($object->status > 0) ? 'style="pointer-events: none"' : '' ?> data-questionId="<?php echo $question->id; ?>">
+                            <?php
+                            print '<input type="hidden" class="question-answer" name="answer' . $question->id . '" id="answer' . $question->id . '" value="0">';
+                            if (is_array($answerList) && !empty($answerList)) {
+                                foreach($answerList as $answerLinked) {
+                                    print '<input type="hidden" class="answer-color answer-color-' . $answerLinked->position . '" value="' . $answerLinked->color . '">';
+                                    print '<span style="' . ($questionAnswer == $answerLinked->position ? 'background:' . $answerLinked->color . '; ' : '') . 'color:' . $answerLinked->color . ';" class="answer ' . ($object->status > 0 ? 'disable' : '') . ' ' . ($questionAnswer == $answerLinked->position ? 'active' : '') . '" value="' . $answerLinked->position . '">';
+                                    if (!empty($answerLinked->pictogram)) {
+                                        print $pictosArray[$answerLinked->pictogram]['picto_source'];
+                                    } else {
+                                        print $answerLinked->value;
+                                    }
+                                    print '</span>';
+                                }
+                            } ?>
+                        </div>
                     <?php endif; ?>
+		    
                 </div>
             </div>
             <?php

@@ -334,7 +334,7 @@ class modDigiQuali extends DolibarrModules
             ],
             // Request to select fields
             'tabsql' => [
-                'SELECT f.rowid as rowid, f.ref, f.label, f.description, f.position, f.active  FROM ' . MAIN_DB_PREFIX . 'c_question_type as f',
+                'SELECT f.rowid as rowid, f.ref, f.label, f.description, f.default_answers, f.position, f.active  FROM ' . MAIN_DB_PREFIX . 'c_question_type as f',
                 'SELECT f.rowid as rowid, f.ref, f.label, f.description, f.position, f.active FROM ' . MAIN_DB_PREFIX . 'c_control_attendants_role as f',
                 'SELECT f.rowid as rowid, f.ref, f.label, f.description, f.position, f.active FROM ' . MAIN_DB_PREFIX . 'c_survey_attendants_role as f'
             ],
@@ -346,19 +346,19 @@ class modDigiQuali extends DolibarrModules
             ],
             // List of fields (result of select to show dictionary)
             'tabfield' => [
-                'ref,label,description,position',
+                'ref,label,description,default_answers,position',
                 'ref,label,description,position',
                 'ref,label,description,position'
             ],
             // List of fields (list of fields to edit a record)
             'tabfieldvalue' => [
-                'ref,label,description,position',
+                'ref,label,description,default_answers,position',
                 'ref,label,description,position',
                 'ref,label,description,position'
             ],
             // List of fields (list of fields for insert)
             'tabfieldinsert' => [
-                'ref,label,description,position',
+                'ref,label,description,default_answers,position',
                 'ref,label,description,position',
                 'ref,label,description,position'
             ],

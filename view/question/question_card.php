@@ -288,37 +288,56 @@ if (empty($reshook)) {
 				// Category association
 				$categories = GETPOST('categories', 'array');
 				$object->setCategories($categories);
+				
+				//Mon super test
+				$defaultAnswers = saturne_get_value_dictionary('c_question_type', 'default_answers', $object->type);
+				
+				if($defaultAnswers>0 && !empty($defaultAnswers->default_answers)){
+				    $arrayDefaultAnswers = explode(',',$defaultAnswers->default_answers);
+				    foreach($arrayDefaultAnswers as $answerp){
+					$answerParameters = explode(':', $answerp);
+					if(sizeof($answerParameters)==3){ //only if there are all parameters
+					    $answer->fk_question = $result;
+					    $answer->value       = $langs->transnoentities($answerParameters[0]);
+					    $answer->pictogram   = $answerParameters[1];
+					    $answer->color       = $answerParameters[2];
+					    $answer->create($user);
+					}
+				    }  
+				    
+				}else{
+				    //backward compatibility
+				    if ($object->type == 'OkKo' || $object->type == 'OkKoToFixNonApplicable') {
+					    $answer->fk_question = $result;
+					    $answer->value       = $langs->transnoentities('OK');
+					    $answer->pictogram   = 'check';
+					    $answer->color       = '#47e58e';
 
-				if ($object->type == 'OkKo' || $object->type == 'OkKoToFixNonApplicable') {
-					$answer->fk_question = $result;
-					$answer->value       = $langs->transnoentities('OK');
-					$answer->pictogram   = 'check';
-					$answer->color       = '#47e58e';
+					    $answer->create($user);
 
-					$answer->create($user);
+					    $answer->fk_question = $result;
+					    $answer->value       = $langs->transnoentities('KO');
+					    $answer->pictogram   = 'times';
+					    $answer->color       = '#e05353';
 
-					$answer->fk_question = $result;
-					$answer->value       = $langs->transnoentities('KO');
-					$answer->pictogram   = 'times';
-					$answer->color       = '#e05353';
+					    $answer->create($user);
+				    }
 
-					$answer->create($user);
-				}
+				    if ($object->type == 'OkKoToFixNonApplicable') {
+					    $answer->fk_question = $result;
+					    $answer->value       = $langs->transnoentities('ToFix');
+					    $answer->pictogram   = 'tools';
+					    $answer->color       = '#e9ad4f';
 
-				if ($object->type == 'OkKoToFixNonApplicable') {
-					$answer->fk_question = $result;
-					$answer->value       = $langs->transnoentities('ToFix');
-					$answer->pictogram   = 'tools';
-					$answer->color       = '#e9ad4f';
+					    $answer->create($user);
 
-					$answer->create($user);
+					    $answer->fk_question = $result;
+					    $answer->value       = $langs->transnoentities('NonApplicable');
+					    $answer->pictogram   = 'N/A';
+					    $answer->color       = '#2b2b2b';
 
-					$answer->fk_question = $result;
-					$answer->value       = $langs->transnoentities('NonApplicable');
-					$answer->pictogram   = 'N/A';
-					$answer->color       = '#2b2b2b';
-
-					$answer->create($user);
+					    $answer->create($user);
+				    }
 				}
 
 
@@ -1124,7 +1143,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		print '</div>';
 	}
 
-	if ($object->type == 'MultipleChoices' || $object->type == 'UniqueChoice' || $object->type == 'OkKo' || $object->type == 'OkKoToFixNonApplicable') {
+	//if ($object->type == 'MultipleChoices' || $object->type == 'UniqueChoice' || $object->type == 'OkKo' || $object->type == 'OkKoToFixNonApplicable') {
 
 		$pictosArray = get_answer_pictos_array();
 
@@ -1278,7 +1297,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 			print '</form>';
 			print '</div>';
 		}
-	}
+	//}
 	print dol_get_fiche_end();
 
 	print '<div class="fichecenter"><div class="fichehalfright">';
