@@ -369,6 +369,43 @@ class InterfaceDigiQualiTriggers extends DolibarrTriggers
                 $actioncomm->label       = $langs->transnoentities('ObjectGenerateTrigger', $langs->transnoentities(ucfirst($object->element)), $object->ref);
                 $actioncomm->create($user);
                 break;
+
+            case 'PRODUCTLOT_CREATE':
+
+                $objectData = ['type' => $object->element, 'id' => $object->id];
+
+                $objectDataJson = json_encode($objectData);
+                $objectDataB64  = base64_encode($objectDataJson);
+
+                $object->array_options['options_control_history_link'] = $objectDataB64;
+                $object->updateExtrafield('control_history_link');
+
+                if (isModEnabled('easyurl')) {
+                    require_once DOL_DOCUMENT_ROOT . '/custom/easyurl/class/shortener.class.php';
+
+                    $shortener = new Shortener($this->db);
+                    $shortener->fetch('', '', ' AND t.status != ' . Shortener::STATUS_ASSIGN);
+
+                    if ($shortener->id == NULL) {
+                        setEventMessage('NoShortLinkAvailable', 'errors');
+                        // TODO : Faire en sorte de gerer le cas ou il n'y a pas de lien disponible
+                        exit;
+                    }
+
+                    $shortener->element_type = 'productlot';
+                    $shortener->fk_element   = $object->id;
+                    $shortener->status       = Shortener::STATUS_ASSIGN;
+                    $shortener->type         = 0; // TODO : Changer ça pour mettre une vrai valeur du dico ?
+                    $shortener->original_url = dol_buildpath('custom/digiquali/public/control/public_control_history.php?track_id=' . $objectDataB64 . '&entity=' . $conf->entity, 3);
+
+                    update_easy_url_link($shortener);
+                    $shortener->update($user);
+
+                    $object->array_options['options_easy_url_all_link'] = $shortener->short_url;
+                    $object->updateExtraField('easy_url_all_link');
+                }
+
+                break;
 		}
 		return 0;
 	}
