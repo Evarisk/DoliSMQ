@@ -136,7 +136,15 @@ class doc_controldocument_odt extends SaturneDocumentModel
 
                             $tmpArray['ref']         = $question->ref;
                             $tmpArray['label']       = $question->label;
-                            $tmpArray['description'] = strip_tags($question->description);
+                            $tmpArray['description'] = $question->description;
+                            foreach (['photo_ko', 'photo_ok'] as $photoType) {
+                                if (!empty($question->$photoType)) {
+                                    $path      = $conf->digiquali->multidir_output[$conf->entity] . '/question/' . $question->ref . '/' . $photoType;
+                                    $fileSmall = saturne_get_thumb_name($question->$photoType);
+                                    $image     = $path . '/thumbs/' . $fileSmall;
+                                    $tmpArray[$photoType] = $image;
+                                }
+                            }
 
                             if (is_array($controldets) && !empty($controldets)) {
                                 $questionAnswerLine     = array_shift($controldets);
